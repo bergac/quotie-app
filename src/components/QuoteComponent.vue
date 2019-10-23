@@ -21,8 +21,11 @@
                     </div>
                 </template>
             </template>
-            <div v-if="quotes.length === 0">
+            <div v-if="!isLoading && quotes.length === 0">
                 No quotes present
+            </div>
+            <div v-if="isLoading">
+                Loading
             </div>
         </div>
 
@@ -30,8 +33,6 @@
 </template>
 
 <script>
-    const apiUrl = 'https://us-central1-quotie-30d23.cloudfunctions.net';
-
     export default {
         name: 'QuoteComponent',
         data: function () {
@@ -40,7 +41,8 @@
                 newAuthor: null,
                 quotes: [],
                 addError: null,
-                getError: null
+                getError: null,
+                isLoading: true
             }
         },
         created: function () {
@@ -49,9 +51,10 @@
         methods: {
             submitNewQuote: function (quote, author) {
                 this.addError = null;
-                fetch(`${apiUrl}/addQuote`
+                fetch('/quotes/create'
                     + `?quote=${encodeURIComponent(quote)}`
-                    + `&author=${encodeURIComponent(author)}`
+                    + `&author=${encodeURIComponent(author)}`,
+                    { method: 'POST' }
                 )
                     .then(result => result.json())
                     .then(res => {
@@ -66,7 +69,8 @@
             },
             fetchQuotes() {
                 this.getError = null;
-                fetch(`${apiUrl}/getQuotes`)
+                this.isLoading = true;
+                fetch('/quotes')
                     .then(response => response.json())
                     .then(response => {
                         if (response.error) {
@@ -83,6 +87,7 @@
                                 }
                             });
                         }
+                        this.isLoading = false;
                     })
             }
         }

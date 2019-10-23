@@ -30,7 +30,6 @@ exports.getQuotes = functions.https.onRequest(async (req, res) => {
     const quotes = await admin.database()
         .ref('/quotes')
         .once('value');
-    // res.set('Access-Control-Allow-Origin', 'http://localhost:8080');
     res.send(quotes);
 });
 
