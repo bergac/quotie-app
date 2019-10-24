@@ -33,19 +33,19 @@ exports.getQuotes = functions.https.onRequest(async (req, res) => {
     res.send(quotes);
 });
 
-// Listens for new messages added to /messages/:pushId/original and creates an
+// Listens for new messages added to /quotes/:pushId/original and creates an
 // uppercase version of the message to /messages/:pushId/uppercase
 exports.reverseQuote = functions.database.ref('/quotes/{quoteId}')
     .onCreate((snapshot, context) => {
         // Grab the current value of what was written to the Realtime Database.
-        const quote: string = `${snapshot.val()}`;
+        const quote: string = `${snapshot.child(snapshot.val()).val().quote}`;
         const reversedQuote = reverseString(quote);
         console.log('Saving quote', context.params.pushId, reversedQuote);
         // const uppercase = newQuote.toUpperCase();
         // You must return a Promise when performing asynchronous tasks inside a Functions such as
         // writing to the Firebase Realtime Database.
         // Setting an "uppercase" sibling in the Realtime Database returns a Promise.
-        return snapshot.ref.parent.child('reversed').set(reversedQuote);
+        return snapshot.ref.parent.parent.child('reversed').set(reversedQuote);
     });
 
 function reverseString(str: string): string {

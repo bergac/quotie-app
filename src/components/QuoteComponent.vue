@@ -53,10 +53,8 @@
                 this.addError = null;
                 fetch('/quotes/create'
                     + `?quote=${encodeURIComponent(quote)}`
-                    + `&author=${encodeURIComponent(author)}`,
-                    { method: 'POST' }
+                    + `&author=${encodeURIComponent(author)}`
                 )
-                    .then(result => result.json())
                     .then(res => {
                         if (res.error) {
                             this.error = res.error;
