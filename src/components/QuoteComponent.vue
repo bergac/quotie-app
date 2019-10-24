@@ -74,8 +74,6 @@
                         if (response.error) {
                             this.getError = response.error
                         } else {
-                            /*eslint no-console: "off"*/
-                            console.log(response);
                             /*eslint no-unused-vars: "off" */
                             this.quotes = Object.keys(response).map(function (key, index) {
                                 return {
